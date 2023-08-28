@@ -1,68 +1,97 @@
 
-import React, { useState ,Component} from 'react'
+import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom/client'
-const Body=()=>{
-  const[state,setState]=useState({
-    weight:"",
-    age:""
-  })
-  let avgWeigh
-  let avgAge
-  const catsWeight=[]
-  const catsAge=[]
-  fetch("https://api.thecatapi.com/v1/breeds")
-  .then(response=>response.json())
-  .then(cats=>{
-    cats.forEach(cat=>{
-        let [min,max]=cat.weight.metric.split('-')
-        min = parseInt(min)
-        max=parseInt(max)
-        const avg=(min+max)/2
-        catsWeight.push(avg)
-      
-        //age
-        let [minAge,maxAge]=cat.life_span.split('-')
-        minAge = parseInt(minAge)
-        maxAge=parseInt(maxAge)
-        const avgAge=(minAge+maxAge)/2
-        catsAge.push(avgAge)
-        
-      })
-      
-      let sum=0
-      for(let i=0;i<catsWeight.length;i++){
-        sum+=catsWeight[i]
-      }
-       avgWeigh=(sum/catsWeight.length).toFixed(2)
+// styles
+const appStyle={
+  textAlign:"center",
+  fontSize:"20px",
+  marginTop:"20px",
+  marginRight:"30px",
+  marginLeft:"30px"
 
-      //  age
-      sum=0
-      for(let i=0;i<catsAge.length;i++){
-        sum+=catsAge[i]
-      }
-       avgAge=(sum/catsAge.length).toFixed(2)
-
-      
-
-      setState({weight:avgWeigh,age:avgAge})
-      
-    })
-
-return (
-        <div>an average weight of a cat is {state.weight} and live up to be {state.age}</div>
-      )
- 
-  
 }
-const App=()=>{
+
+const componentStyle={
+  backgroundColor:"#2F3C7E",
+  padding:"10px",
+  color:"#FBEAEB"
+}
+
+const searchBarStyle={
+  marginTop:"10px",
+  backgroundColor:"#2F3C7E",
+  color:"#FBEAEB",
+  fontSize:"larger",
+  borderRadius:"20px",
+  height:"40px",
+  textAlign:"center",
+  width:"auto"
+}
+
+// Components
+const Header=(props)=>{
+  return (
+  <header style={componentStyle}>
+    <h1>World Coutries <br/>Data</h1>
+    <p>Currently We have {props.countryiesData.length} Countries</p>
+    <p> X satified the search criteria</p>
+  </header>
+  )
+}
+const SearchBar=()=>{
   return(
-    <div style={{textAlign:"center"}}>
-      <h1>30 Days Of React</h1>
-      <h4>Cat's Paradise</h4>
-      <small>there are 67 breeds of cats</small>
-      <Body/>
+    <div>
+          <input autoFocus placeholder='Search Countries By' type="text" style={searchBarStyle}/>
     </div>
   )
 }
+
+const Country=()=>{
+  <div>
+
+  </div>
+}
+const CountriesList=()=>{
+
+  return(
+  <div style={componentStyle}>
+
+  </div>
+  )
+  
+}
+
+
+const App=()=>{
+  const [data,setData]=useState([])
+
+  useEffect(()=>{
+    fetchData()
+  },[])
+
+  const fetchData=async ()=>{
+    try{
+      const url ="https://restcountries.com/v3.1/all?fields=name,flags,capital,languages,population,currency"
+      const response=await fetch(url)
+      const body=await response.json()
+      setData(body)
+    }
+    catch(error){
+      console.log('error: ',error)
+    }
+  }
+  // console.log('data: ',data)
+  return (
+    <div style={appStyle}>
+      <Header countryiesData={data}/>
+      <SearchBar/>
+      
+    </div>
+  )
+
+}
+
+
+// Creating root and rendering
 const root=ReactDOM.createRoot(document.getElementById("root"))
 root.render(<App/>)
