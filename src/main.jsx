@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom/client'
+import  {HighestCountries} from './highestCountries'
 // styles
 const appStyle={
   padding:"20px",
@@ -8,7 +9,8 @@ const appStyle={
   fontSize:"20px",
   marginTop:"20px",
   marginRight:"10%",
-  marginLeft:"10%"
+  marginLeft:"10%",
+  fontFamily:"Montserrat"
 
 }
 
@@ -63,21 +65,22 @@ const SearchBar=({setSearch})=>{
   }
   return(
     <div>
-          <input autoFocus placeholder='Search Countries By' type="text" style={searchBarStyle} onChange={handleChange}/>
+          <input autoFocus placeholder='Search Countries By Name' type="text" style={searchBarStyle} onChange={handleChange}/>
     </div>
   )
 }
 
 const Country=({countryData:{name,capital,flags,population,languages}})=>{
-  
+  const languagesList=Object.keys(languages)
+  const formatedlanguages=languagesList.length===1?'Language':'Languages'
   return (
   <div style={countryStyle}>
-    <div style={{align:"center" ,marginLeft:"25%"}}>
-      <img src={flags.png} alt={name.common} />
+    <div style={{display:"flex",justifyContent:"spaceEvenly"}}>
+      <img src={flags.png} alt={name.common} style={{marginTop:"10px",marginLeft:"25%"}}/>
     </div>
     <h3 style={{color:"black"}}>Name: <span style={{color:"grey"}}>{name.common}</span></h3>
     <h3 style={{color:"black"}}>Capital:    <span style={{color:"grey"}}>{capital.join(",")}</span></h3>
-    <h3 style={{color:"black"}}>Languages:  <span style={{color:"grey"}}>{Object.keys(languages).join(',')}</span></h3>
+    <h3 style={{color:"black"}}>{formatedlanguages}:  <span style={{color:"grey"}}>{languagesList.join(',')}</span></h3>
     <h3 style={{color:"black"}}>Population: <span style={{color:"grey"}}>{population.toLocaleString("en-US")}</span></h3>
   </div>
   )
@@ -86,7 +89,6 @@ const CountriesList=({countriesData, search})=>{
   let countries
   if(search){
   const filteredCountries=countriesData.filter((country)=>{
-    console.log(country)
     const countryName=country.name.common.toUpperCase()
     return countryName.includes(search.toUpperCase())
   })
@@ -103,7 +105,7 @@ const CountriesList=({countriesData, search})=>{
   
 }
 
-
+// APP component
 const App=()=>{
   
   const [data,setData]=useState([])
@@ -123,12 +125,13 @@ const App=()=>{
       console.log('error: ',error)
     }
   }
-  // console.log('data: ',data)
+
   return (
     <div style={appStyle}>
       <Header countriesData={data}/>
       <SearchBar setSearch={setSearh}/>
       <CountriesList countriesData={data} search={search}/>
+      <HighestCountries/>
       
     </div>
   )
