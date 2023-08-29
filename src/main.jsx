@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 // styles
 const appStyle={
+  padding:"20px",
   textAlign:"center",
   fontSize:"20px",
   marginTop:"20px",
@@ -11,10 +12,11 @@ const appStyle={
 
 }
 
-const componentStyle={
+const HeaderStyle={
   backgroundColor:"#2F3C7E",
   padding:"10px",
-  color:"#FBEAEB"
+  color:"#FBEAEB",
+ 
 }
 
 const searchBarStyle={
@@ -28,12 +30,27 @@ const searchBarStyle={
   width:"auto"
 }
 
+const countriesListStyle={
+  ...HeaderStyle,
+  paddingLeft:"100px",
+  paddingRight:"100px"
+}
+
+const countryStyle={
+
+  textAlign:"left",
+  backgroundColor:"#FBEAEB",
+  color:"#2F3C7E"
+
+  
+}
+
 // Components
 const Header=(props)=>{
   return (
-  <header style={componentStyle}>
+  <header style={HeaderStyle}>
     <h1>World Coutries <br/>Data</h1>
-    <p>Currently We have {props.countryiesData.length} Countries</p>
+    <p>Currently We have {props.countriesData.length} Countries</p>
     <p> X satified the search criteria</p>
   </header>
   )
@@ -46,16 +63,25 @@ const SearchBar=()=>{
   )
 }
 
-const Country=()=>{
-  <div>
-
+const Country=({countryData:{name,capital,flags,population,languages}})=>{
+  
+  return (
+  <div style={countryStyle}>
+    <div style={{align:"center" ,marginLeft:"25%"}}>
+      <img src={flags.png} alt={name.common} />
+    </div>
+    <h3>Name: {name.common}</h3>
+    <h3>Capital: {capital.join(",")}</h3>
+    <h3>Languages: {Object.keys(languages).join(',')}</h3>
+    <h3>Population: {population}</h3>
   </div>
+  )
 }
-const CountriesList=()=>{
-
+const CountriesList=({countriesData})=>{
+  console.log(countriesData)
   return(
-  <div style={componentStyle}>
-
+  <div style={countriesListStyle}>
+    {countriesData.map(country=><Country countryData={country} key={country}/>)}
   </div>
   )
   
@@ -83,8 +109,9 @@ const App=()=>{
   // console.log('data: ',data)
   return (
     <div style={appStyle}>
-      <Header countryiesData={data}/>
+      <Header countriesData={data}/>
       <SearchBar/>
+      <CountriesList countriesData={data}/>
       
     </div>
   )
